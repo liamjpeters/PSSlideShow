@@ -1,0 +1,30 @@
+{{ define "main" }}
+  <nav aria-label="Breadcrumb" class="mb-6 text-sm text-gray-600 dark:text-gray-400">
+    <a href="{{ .CurrentSection.RelPermalink }}" class="hover:underline">{{ .CurrentSection.Title }}</a>
+    <span aria-hidden="true"> / </span>{{ .Title }}
+  </nav>
+  <article class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    {{ with .Params.image }}
+      <img src="{{ . | relURL }}" alt="{{ $.Params.image_alt | default (printf "%s screenshot" $.Title) }}"
+           class="w-full border-b border-gray-200 dark:border-gray-700">
+    {{ end }}
+    <div class="p-8 md:p-12">
+      <h1 class="mb-3 text-3xl font-bold text-gray-900 dark:text-white">{{ .Title }}</h1>
+      <p class="mb-8 text-lg text-gray-600 dark:text-gray-300">{{ .Description }}</p>
+      <div class="prose dark:prose-invert">{{ .Content }}</div>
+      {{ with .Params.cmdlets }}
+        <div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <h2 class="mb-3 text-lg font-semibold text-gray-900 dark:text-white">Cmdlet reference</h2>
+          <ul class="flex flex-wrap gap-3">
+            {{ range . }}
+              {{ $command := . }}
+              {{ $page := site.GetPage (printf "/cmdlets/%s" (lower $command)) }}
+              {{ if not $page }}{{ errorf "Missing cmdlet page for %s" $command }}{{ end }}
+              <li><a href="{{ $page.RelPermalink }}" class="text-gray-700 underline dark:text-gray-300">{{ $command }}</a></li>
+            {{ end }}
+          </ul>
+        </div>
+      {{ end }}
+    </div>
+  </article>
+{{ end }}

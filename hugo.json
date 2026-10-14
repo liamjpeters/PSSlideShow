@@ -1,0 +1,63 @@
+{
+  "baseURL": "http://localhost:1313/",
+  "languageCode": "en-GB",
+  "title": "PSSlideShow",
+  "enableRobotsTXT": true,
+  "disableKinds": ["taxonomy", "term", "RSS"],
+  "build": {
+    "buildStats": {
+      "enable": true
+    },
+    "cachebusters": [
+      {
+        "source": "assets/notwatching/hugo_stats\\.json",
+        "target": "css"
+      },
+      {
+        "source": "(postcss|tailwind)\\.config\\.js",
+        "target": "css"
+      }
+    ]
+  },
+  "module": {
+    "mounts": [
+      {
+        "source": "static",
+        "target": "static"
+      },
+      {
+        "source": "assets",
+        "target": "assets"
+      },
+      {
+        "disableWatch": true,
+        "source": "hugo_stats.json",
+        "target": "assets/notwatching/hugo_stats.json"
+      }
+    ]
+  },
+  "markup": {
+    "goldmark": {
+      "renderer": {
+        "unsafe": false
+      },
+      "parser": {
+        "autoHeadingID": true,
+        "autoHeadingIDType": "github"
+      }
+    },
+    "highlight": {
+      "noClasses": false
+    }
+  },
+  "menu": {
+    "main": [
+      { "name": "Home", "pageRef": "/", "weight": 1 },
+      { "name": "Cmdlets", "pageRef": "/cmdlets", "weight": 2 },
+      { "name": "Widgets", "pageRef": "/widgets", "weight": 3 }
+    ]
+  },
+  "params": {
+    "description": "Author and present interactive terminal slide shows with PowerShell."
+  }
+}

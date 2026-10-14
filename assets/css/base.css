@@ -1,0 +1,64 @@
+/* Base styles - fundamental HTML and layout */
+
+html {
+    /* Fix for sticky nav covering anchor links */
+    scroll-padding-top: 6rem;
+    /* Ensure consistent box-sizing */
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+body {
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.6;
+    /* Flexbox layout for sticky footer */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* Force consistent viewport behavior */
+    width: 100vw;
+    overflow-x: hidden;
+}
+
+/* Code block styling */
+pre {
+    @apply p-4 rounded-lg;
+}
+
+pre .hl {
+    @apply rounded-sm;
+}
+
+/* Inline code styling - ensure it respects dark mode */
+code:not(.chroma code) {
+    @apply px-1 py-0.5 rounded text-sm bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200;
+}
+
+/* Custom scrollbar styling for code blocks */
+.chroma,
+pre {
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 #282a36;
+    scrollbar-gutter: stable;
+}
+
+.prose {
+    @apply leading-relaxed;
+}
+
+/* * {
+  outline: 1px solid red !important;
+} */
+
+.prose {
+    max-width: 100% !important;
+}
+
+.prose blockquote {
+    @apply !not-italic !font-normal;
+}

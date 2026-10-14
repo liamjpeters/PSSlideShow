@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="{{ site.LanguageCode }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ if ne .Title site.Title }}{{ .Title }} - {{ end }}{{ site.Title }}</title>
+    <meta name="description" content="{{ .Description | default site.Params.description }}">
+    <meta name="theme-color" content="#ffffff" id="theme-color-meta">
+    <link rel="canonical" href="{{ .Permalink }}">
+    <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
+    {{ with (templates.Defer (dict "key" "global")) }}
+      {{ partial "css.html" . }}
+    {{ end }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+      function applyTheme() {
+        const preference = localStorage.getItem('theme') || 'system';
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const dark = preference === 'dark' || (preference === 'system' && systemDark);
+        document.documentElement.classList.toggle('dark', dark);
+        document.documentElement.dataset.theme = preference;
+        document.getElementById('theme-color-meta').content = dark ? '#1a1a1d' : '#ffffff';
+      }
+      applyTheme();
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (!localStorage.getItem('theme') || localStorage.getItem('theme') === 'system') applyTheme();
+      });
+    </script>
+    <style>
+      .theme-icon { display: none; }
+      [data-theme="system"] .theme-icon-system,
+      [data-theme="light"] .theme-icon-light,
+      [data-theme="dark"] .theme-icon-dark { display: inline; }
+    </style>
+  </head>
+  <body class="flex flex-col min-h-screen transition-colors bg-gray-50 dark:bg-gray-900">
+    <nav id="main-nav" aria-label="Main navigation"
+         class="sticky top-0 z-50 transition-shadow border-b border-gray-200 dark:border-gray-700 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95">
+      <div class="max-w-5xl px-8 mx-auto">
+        <div class="flex items-center justify-between py-4">
+          <a href="{{ site.Home.RelPermalink }}"
+             class="text-xl font-bold text-gray-900 transition-colors dark:text-white hover:text-gray-600 dark:hover:text-gray-400">
+            {{ site.Title }}
+          </a>
+          <div class="items-center hidden space-x-8 md:flex">
+            {{ range site.Menus.main }}
+              <a href="{{ .URL | relURL }}"
+                 class="font-medium text-gray-700 transition-colors dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-400">
+                {{ .Name }}
+              </a>
+            {{ end }}
+            <button type="button" data-theme-toggle
+                    class="p-2 text-gray-700 transition-colors cursor-pointer dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-400"
+                    aria-label="Switch theme" title="Automatic theme (follows your device)">
+              <span class="theme-icon theme-icon-system">{{ partial "icon.html" (dict "name" "half-circle" "class" "w-5 h-5") }}</span>
+              <span class="theme-icon theme-icon-light">{{ partial "icon.html" (dict "name" "sun" "class" "w-5 h-5") }}</span>
+              <span class="theme-icon theme-icon-dark">{{ partial "icon.html" (dict "name" "moon" "class" "w-5 h-5") }}</span>
+            </button>
+          </div>
+          <div class="flex items-center space-x-2 md:hidden">
+            <button type="button" data-theme-toggle
+                    class="p-2 text-gray-700 transition-colors cursor-pointer dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-400"
+                    aria-label="Switch theme" title="Automatic theme (follows your device)">
+              <span class="theme-icon theme-icon-system">{{ partial "icon.html" (dict "name" "half-circle" "class" "w-5 h-5") }}</span>
+              <span class="theme-icon theme-icon-light">{{ partial "icon.html" (dict "name" "sun" "class" "w-5 h-5") }}</span>
+              <span class="theme-icon theme-icon-dark">{{ partial "icon.html" (dict "name" "moon" "class" "w-5 h-5") }}</span>
+            </button>
+            <button type="button" id="mobile-menu-button" aria-expanded="false" aria-controls="mobile-menu"
+                    class="text-gray-700 cursor-pointer dark:text-gray-300">
+              <span class="sr-only">Open main menu</span>
+              <span id="menu-icon">{{ partial "icon.html" (dict "name" "menu" "class" "h-6 w-6") }}</span>
+              <span id="close-icon" class="hidden">{{ partial "icon.html" (dict "name" "close" "class" "h-6 w-6") }}</span>
+            </button>
+          </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden">
+          <div class="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200 dark:border-gray-700">
+            {{ range site.Menus.main }}
+              <a href="{{ .URL | relURL }}"
+                 class="block px-3 py-2 font-medium text-gray-700 transition-colors rounded-md dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                {{ .Name }}
+              </a>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </nav>
+    <main id="content" class="flex-1 w-full max-w-5xl px-8 py-8 mx-auto">
+      {{ block "main" . }}{{ end }}
+    </main>
+    <footer class="bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      <div class="max-w-5xl px-4 py-8 mx-auto text-sm text-center text-gray-600 dark:text-gray-400">
+        PSSlideShow is MIT licensed. Built with
+        <a class="hover:underline" href="https://gohugo.io/">Hugo</a> and
+        <a class="hover:underline" href="https://tailwindcss.com/">Tailwind CSS</a>.
+      </div>
+    </footer>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const nav = document.getElementById('main-nav');
+        const updateShadow = () => nav.classList.toggle('shadow-sm', window.scrollY > 10);
+        window.addEventListener('scroll', updateShadow, { passive: true });
+        updateShadow();
+
+        const menuButton = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+        function setMenu(open) {
+          menu.classList.toggle('hidden', !open);
+          menuIcon.classList.toggle('hidden', open);
+          closeIcon.classList.toggle('hidden', !open);
+          menuButton.setAttribute('aria-expanded', String(open));
+          const label = open ? 'Close main menu' : 'Open main menu';
+          menuButton.setAttribute('aria-label', label);
+          menuButton.querySelector('.sr-only').textContent = label;
+        }
+        menuButton.addEventListener('click', () => setMenu(menu.classList.contains('hidden')));
+        menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false)));
+        document.addEventListener('keydown', event => {
+          if (event.key === 'Escape') setMenu(false);
+        });
+
+        function updateThemeButtons() {
+          const preference = localStorage.getItem('theme') || 'system';
+          const next = preference === 'light' ? 'dark' : preference === 'dark' ? 'system' : 'manual';
+          document.querySelectorAll('[data-theme-toggle]').forEach(button => {
+            button.title = preference === 'system' ? 'Automatic theme (follows your device)' :
+              preference === 'light' ? 'Light theme' : 'Dark theme';
+            button.setAttribute('aria-label', next === 'manual' ? 'Switch to manual theme' :
+              next === 'system' ? 'Follow device theme' : `Switch to ${next} theme`);
+          });
+        }
+        document.querySelectorAll('[data-theme-toggle]').forEach(button => button.addEventListener('click', () => {
+          const current = localStorage.getItem('theme') || 'system';
+          const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const next = current === 'system' ? (systemDark ? 'light' : 'dark') :
+            current === 'light' ? 'dark' : 'system';
+          localStorage.setItem('theme', next);
+          applyTheme();
+          updateThemeButtons();
+        }));
+        updateThemeButtons();
+
+        document.querySelectorAll('.prose pre').forEach(pre => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'code-block-container';
+          pre.parentNode.insertBefore(wrapper, pre);
+          wrapper.appendChild(pre);
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'copy-button';
+          button.textContent = 'Copy';
+          button.setAttribute('aria-label', 'Copy code');
+          button.addEventListener('click', async () => {
+            try {
+              await navigator.clipboard.writeText(pre.innerText);
+              button.textContent = 'Copied';
+              button.classList.add('copied');
+            } catch (error) {
+              button.textContent = 'Copy failed';
+              console.error('Unable to copy code', error);
+            } finally {
+              setTimeout(() => { button.textContent = 'Copy'; button.classList.remove('copied'); }, 2000);
+            }
+          });
+          wrapper.appendChild(button);
+        });
+      });
+    </script>
+  </body>
+</html>

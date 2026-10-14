@@ -1,0 +1,57 @@
+.copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #e5e7eb;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.code-block-container:hover .copy-button {
+  opacity: 1;
+}
+
+.copy-button:focus-visible {
+  opacity: 1;
+}
+
+/* Always show copy button on touch devices (mobile) */
+@media (hover: none) {
+  .copy-button {
+    opacity: 1;
+  }
+}
+
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.copy-button.copied,
+.copy-button.copied:hover {
+  background: #10b981 !important;
+  color: white !important;
+}
+
+.copy-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Code block copy button styling */
+.code-block-container {
+  position: relative;
+}
+
+.code-block-container pre code span.cl {
+  padding-right: 78px;
+}

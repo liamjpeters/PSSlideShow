@@ -1,0 +1,107 @@
+name: Deploy documentation site
+
+on:
+  push:
+    branches: [main, gh-pages]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: documentation-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site source
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+          persist-credentials: false
+
+      - name: Check out current module
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: module-source
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install PowerShell 7.6 and PlatyPS
+        shell: bash
+        run: |
+          case "$(uname -m)" in
+            x86_64) rid=linux-x64 ;;
+            aarch64) rid=linux-arm64 ;;
+            *) echo "Unsupported architecture: $(uname -m)" >&2; exit 1 ;;
+          esac
+          archive="$RUNNER_TEMP/pwsh.tar.gz"
+          destination="$RUNNER_TEMP/pwsh-7.6"
+          url="https://github.com/PowerShell/PowerShell/releases/download/v7.6.6/powershell-7.6.6-${rid}.tar.gz"
+          curl --fail --location --retry 3 --silent --show-error --output "$archive" "$url"
+          mkdir -p "$destination"
+          tar -xzf "$archive" -C "$destination"
+          chmod +x "$destination/pwsh"
+          "$destination/pwsh" -NoProfile -NonInteractive -Command '$ErrorActionPreference = "Stop"; Install-Module Microsoft.PowerShell.PlatyPS -RequiredVersion 1.0.3 -Scope CurrentUser -Force'
+
+      - name: Build and validate module help
+        shell: bash
+        run: |
+          "$RUNNER_TEMP/pwsh-7.6/pwsh" -NoProfile -NonInteractive \
+            -File "$GITHUB_WORKSPACE/module-source/build.ps1" -Configuration Release -SkipTests -Docs
+          "$RUNNER_TEMP/pwsh-7.6/pwsh" -NoProfile -NonInteractive \
+            -File "$GITHUB_WORKSPACE/site/scripts/Sync-CmdletHelp.ps1" \
+            -ModuleRoot "$GITHUB_WORKSPACE/module-source"
+
+      - name: Set up Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.148.1'
+          extended: true
+
+      - name: Install Tailwind CSS CLI
+        shell: bash
+        run: |
+          curl --fail --location --retry 3 --silent --show-error \
+            --output "$RUNNER_TEMP/tailwindcss" \
+            https://github.com/tailwindlabs/tailwindcss/releases/download/v4.1.11/tailwindcss-linux-x64
+          chmod +x "$RUNNER_TEMP/tailwindcss"
+
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build site
+        shell: bash
+        env:
+          HUGO_ENVIRONMENT: production
+        run: |
+          export PATH="$RUNNER_TEMP:$PATH"
+          hugo --source site --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+          test -f site/public/cmdlets/new-slidetext/index.html
+          test -f site/public/widgets/text/index.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy site
+        id: deployment
+        uses: actions/deploy-pages@v4

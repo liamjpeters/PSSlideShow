@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+  <!-- Circle outline -->
+  <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <!-- Left half filled using path -->
+  <path d="M 10 2 A 8 8 0 0 1 10 18 Z" fill="currentColor"/>
+</svg>

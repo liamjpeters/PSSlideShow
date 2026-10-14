@@ -1,0 +1,11 @@
+/module/
+/src/
+/tests/
+/bin/
+/obj/
+/public/
+/resources/
+/hugo_stats.json
+/.hugo_build.lock
+/content/cmdlets/*.md
+!/content/cmdlets/_index.md

@@ -1,0 +1,45 @@
+/* Custom utility classes and prose modifications */
+
+/* Using prose modifier utilities */
+.prose code:not(:where(pre code)):before,
+.prose code:not(:where(pre code)):after {
+    content: none !important;
+}
+
+.prose code:not(:where(pre code)) {
+    font-weight: normal;
+    white-space: break-spaces;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+pre > code.language-no-highlight {
+    color: tomato;
+}
+
+/* Animated cursor/block character animations */
+
+/* Classic blinking cursor (like terminal) */
+@keyframes cursor-blink {
+    0%,
+    50% {
+        opacity: 1;
+    }
+    51%,
+    100% {
+        opacity: 0;
+    }
+}
+/* Class that will be applied to animated cursor characters */
+.animated-cursor {
+    /* Classic terminal blink */
+    animation: cursor-blink 1s infinite;
+
+    /* Ensure the cursor stays inline */
+    display: inline;
+}
+
+.prose :where(blockquote p):before,
+.prose :where(blockquote p):after {
+    content: none !important;
+}

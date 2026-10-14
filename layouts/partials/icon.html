@@ -1,0 +1,14 @@
+{{/*
+  Icon partial - loads SVG icons from assets/icons/
+  Usage: {{ partial "icon.html" (dict "name" "sun" "class" "w-5 h-5") }}
+*/}}
+{{ $iconName := .name }}
+{{ $class := .class | default "" }}
+{{ $iconPath := printf "icons/%s.svg" $iconName }}
+{{ $icon := resources.Get $iconPath }}
+{{ if $icon }}
+  {{ $iconContent := $icon.Content | safeHTML }}
+  {{ $iconContent | replaceRE `<svg` (printf `<svg class="%s"` $class) | safeHTML }}
+{{ else }}
+  <!-- Icon not found: {{ $iconName }} -->
+{{ end }}
