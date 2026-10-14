@@ -9,6 +9,13 @@ artifacts/
 module/bin/
 module/LICENSE
 
+# Hugo site output left behind when switching from gh-pages
+/.hugo_build.lock
+/hugo_stats.json
+/public/
+/resources/
+/content/cmdlets/*.md
+
 # ---- .NET / Visual Studio ----------------------------------------------
 *.user
 *.suo
