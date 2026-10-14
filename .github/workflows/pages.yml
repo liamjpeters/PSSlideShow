@@ -2,7 +2,7 @@ name: Deploy documentation site
 
 on:
   push:
-    branches: [main, gh-pages]
+    branches: [gh-pages]
   workflow_dispatch:
 
 permissions:
