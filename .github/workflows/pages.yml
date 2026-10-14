@@ -3,6 +3,14 @@ name: Refresh documentation site
 on:
   push:
     branches: [main]
+    paths:
+      - '.github/workflows/pages.yml'
+      - 'Directory.Build.props'
+      - 'build.ps1'
+      - 'build-docs.ps1'
+      - 'docs/PSSlideShow/**'
+      - 'module/**'
+      - 'src/**'
   workflow_dispatch:
 
 permissions:
