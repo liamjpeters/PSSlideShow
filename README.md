@@ -1,8 +1,8 @@
 # PSSlideShow site
 
 This orphan branch contains the Hugo and Tailwind CSS source for the PSSlideShow documentation
-site. It follows the layout and system/light/dark theme of
-[Liam Peters' website](https://liampeters.co.uk), without the blog features.
+site. It uses a responsive, card-based layout, sticky navigation, and a system/light/dark theme
+without blog features.
 
 ## Content
 
