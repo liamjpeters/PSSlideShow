@@ -39,8 +39,8 @@
     PrivateData = @{
         PSData = @{
             Tags       = @('Console', 'Presentation', 'SlideShow', 'Spectre', 'Terminal')
-            ProjectUri = 'https://github.com/PSSlideShow/PSSlideShow'
-            LicenseUri = 'https://github.com/PSSlideShow/PSSlideShow/blob/master/LICENSE'
+            ProjectUri = 'https://github.com/liamjpeters/PSSlideShow'
+            LicenseUri = 'https://github.com/liamjpeters/PSSlideShow/blob/main/LICENSE'
         }
     }
 }
