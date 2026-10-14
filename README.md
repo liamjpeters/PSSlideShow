@@ -32,9 +32,10 @@ are ignored by Git.
 
 ## Deploy
 
-The [Pages workflow](.github/workflows/pages.yml) builds on pushes to `gh-pages`. A small workflow
-on `main` dispatches it when the module changes, so deployments always run from the branch allowed
-by the `github-pages` environment. Each build checks out the latest `main` for the module and
-`gh-pages` for the site, validates the command help, builds with Hugo and Tailwind, and deploys a
-Pages artifact. Set the repository's GitHub Pages source to **GitHub Actions**; the generated HTML
-does not live in this branch.
+The [Pages workflow](.github/workflows/pages.yml) builds when site source changes on `gh-pages`.
+A small workflow on `main` dispatches it when module source, help, or build inputs change, so
+deployments always run from the branch allowed by the `github-pages` environment. README-only and
+`.gitignore` changes do not redeploy the site. Each build checks out the latest `main` for the
+module and `gh-pages` for the site, validates the command help, builds with Hugo and Tailwind, and
+deploys a Pages artifact. Set the repository's GitHub Pages source to **GitHub Actions**; the
+generated HTML does not live in this branch.

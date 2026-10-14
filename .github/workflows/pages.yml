@@ -3,6 +3,15 @@ name: Deploy documentation site
 on:
   push:
     branches: [gh-pages]
+    paths:
+      - '.github/workflows/pages.yml'
+      - 'assets/**'
+      - 'content/**'
+      - 'hugo.json'
+      - 'layouts/**'
+      - 'scripts/**'
+      - 'static/**'
+      - 'tailwind.config.js'
   workflow_dispatch:
 
 permissions:
