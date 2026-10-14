@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net472</TargetFrameworks>
+    <RootNamespace>PSSlideShow</RootNamespace>
+    <AssemblyName>PSSlideShow</AssemblyName>
+    <!-- The host (PowerShell) supplies System.Management.Automation at runtime. -->
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <!-- Copy private NuGet dependencies (Spectre.Console, TextMateSharp) into the output so the
+         module can ship and resolve them from its own folder. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Reference-only: the PowerShell host provides the real assembly at runtime. -->
+    <PackageReference Include="PowerShellStandard.Library" Version="$(PowerShellStandardVersion)" PrivateAssets="all" ExcludeAssets="runtime" />
+    <PackageReference Include="Spectre.Console" Version="$(SpectreConsoleVersion)" />
+    <PackageReference Include="TextMateSharp" Version="$(TextMateSharpVersion)" />
+    <PackageReference Include="TextMateSharp.Grammars" Version="$(TextMateSharpVersion)" />
+  </ItemGroup>
+
+  <!-- Build net472 anywhere via reference assemblies. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Let the test assembly reach internal seams. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="PSSlideShow.Tests" />
+  </ItemGroup>
+
+</Project>

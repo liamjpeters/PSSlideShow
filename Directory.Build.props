@@ -1,0 +1,25 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <Company>PSSlideShow</Company>
+    <Product>PSSlideShow</Product>
+    <Copyright>Copyright (c) PSSlideShow contributors</Copyright>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <!-- Shared dependency versions so every project stays in lockstep. -->
+  <PropertyGroup>
+    <SpectreConsoleVersion>0.49.1</SpectreConsoleVersion>
+    <TextMateSharpVersion>1.0.66</TextMateSharpVersion>
+    <PowerShellStandardVersion>5.1.1</PowerShellStandardVersion>
+    <!-- Test host runtime; kept in step with the shipped net10.0 / PowerShell 7.6+ target. -->
+    <PowerShellSdkVersion>7.6.4</PowerShellSdkVersion>
+  </PropertyGroup>
+
+</Project>

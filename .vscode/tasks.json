@@ -1,0 +1,112 @@
+{
+    // VS Code tasks for PSSlideShow. These drive the repo's build.ps1 / build-docs.ps1 scripts.
+    // Run with: Terminal > Run Task…  (or Ctrl+Shift+B for the default build).
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "detail": "Build both TFMs and stage the module into module/bin (Debug, no tests).",
+            "type": "process",
+            "command": "pwsh",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "${workspaceFolder}/build.ps1",
+                "-Configuration",
+                "Debug",
+                "-SkipTests"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "build (Release)",
+            "detail": "Build both TFMs and stage the module into module/bin (Release, no tests).",
+            "type": "process",
+            "command": "pwsh",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "${workspaceFolder}/build.ps1",
+                "-Configuration",
+                "Release",
+                "-SkipTests"
+            ],
+            "group": "build",
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "test",
+            "detail": "Build, stage, then run the xUnit + Pester suites (Debug).",
+            "type": "process",
+            "command": "pwsh",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "${workspaceFolder}/build.ps1",
+                "-Configuration",
+                "Debug"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "build docs",
+            "detail": "Test the PlatyPS Markdown help and compile the MAML into the staged module (builds first).",
+            "type": "process",
+            "command": "pwsh",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "${workspaceFolder}/build-docs.ps1"
+            ],
+            "dependsOn": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        },
+        {
+            "label": "build docs (update)",
+            "detail": "Re-sync the Markdown help from the staged module, then test and compile it. Fill in any {{ ... }} placeholders afterwards.",
+            "type": "process",
+            "command": "pwsh",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "${workspaceFolder}/build-docs.ps1",
+                "-Update"
+            ],
+            "dependsOn": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            }
+        }
+    ]
+}

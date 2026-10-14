@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="Spectre.Console.Testing" Version="$(SpectreConsoleVersion)" />
+    <!--
+      The host (pwsh) normally supplies a fully-provisioned PowerShell runtime. To exercise the
+      runspace/execution code in-process, the test host needs the complete SDK (command assemblies
+      and native runtime files), not just bare SMA. This affects tests only, never the shipped module.
+    -->
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="$(PowerShellSdkVersion)" />
+    <!--
+      Override the vulnerable System.Security.Cryptography.Xml that Microsoft.PowerShell.SDK pulls in
+      transitively (NU1903). Test-only, and the affected XML-signature code path is never exercised;
+      pinned to the latest patched 10.0.x purely to keep the audit clean.
+    -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PSSlideShow\PSSlideShow.csproj" />
+  </ItemGroup>
+
+</Project>

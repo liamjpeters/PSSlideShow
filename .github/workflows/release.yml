@@ -1,0 +1,69 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  package:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    env:
+      RELEASE_TAG: ${{ github.event.release.tag_name }}
+      POWERSHELL_VERSION: '7.6.6'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Check tag against module version
+        shell: pwsh
+        run: |
+          $moduleVersion = (Import-PowerShellDataFile -Path .\module\PSSlideShow.psd1).ModuleVersion
+          $expectedTag = "v$moduleVersion"
+          if ($env:RELEASE_TAG -cne $expectedTag) {
+            throw "Release tag '$env:RELEASE_TAG' must match the manifest ModuleVersion ('$expectedTag')."
+          }
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install PowerShell 7.6 and PlatyPS
+        shell: powershell
+        run: |
+          $version = $env:POWERSHELL_VERSION
+          $archive = Join-Path $env:RUNNER_TEMP 'pwsh.zip'
+          $destination = Join-Path $env:RUNNER_TEMP 'pwsh-7.6'
+          $url = "https://github.com/PowerShell/PowerShell/releases/download/v$version/PowerShell-$version-win-x64.zip"
+          Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing
+          Expand-Archive -LiteralPath $archive -DestinationPath $destination
+          & (Join-Path $destination 'pwsh.exe') -NoProfile -NonInteractive -Command '$ErrorActionPreference = "Stop"; Install-Module Microsoft.PowerShell.PlatyPS -RequiredVersion 1.0.3 -Scope CurrentUser -Force'
+          if ($LASTEXITCODE -ne 0) { throw "PlatyPS installation failed ($LASTEXITCODE)." }
+
+      - name: Build and stage release module
+        shell: powershell
+        run: |
+          $installDir = Join-Path $env:RUNNER_TEMP 'pwsh-7.6'
+          $env:PATH = "$installDir;$env:PATH"
+          & (Join-Path $installDir 'pwsh.exe') -NoProfile -NonInteractive -File .\build.ps1 -Configuration Release -SkipTests -Docs
+          if ($LASTEXITCODE -ne 0) { throw "Release build failed ($LASTEXITCODE)." }
+
+      - name: Package module
+        shell: pwsh
+        run: |
+          $packageDir = Join-Path $env:RUNNER_TEMP 'PSSlideShow'
+          New-Item -ItemType Directory -Path $packageDir | Out-Null
+          Get-ChildItem -LiteralPath .\module | Copy-Item -Destination $packageDir -Recurse -Force
+          $archive = Join-Path $env:RUNNER_TEMP "PSSlideShow-$($env:RELEASE_TAG.Substring(1)).zip"
+          Compress-Archive -LiteralPath $packageDir -DestinationPath $archive
+
+      - name: Attach archive to release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $archive = Join-Path $env:RUNNER_TEMP "PSSlideShow-$($env:RELEASE_TAG.Substring(1)).zip"
+          gh release upload $env:RELEASE_TAG $archive --repo $env:GITHUB_REPOSITORY
+          if ($LASTEXITCODE -ne 0) { throw "Uploading the release archive failed ($LASTEXITCODE)." }

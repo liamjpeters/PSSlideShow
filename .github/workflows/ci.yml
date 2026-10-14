@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  POWERSHELL_VERSION: '7.6.6'
+
+jobs:
+  build-and-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install PowerShell 7.6 on Windows
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $version = $env:POWERSHELL_VERSION
+          $archive = Join-Path $env:RUNNER_TEMP 'pwsh.zip'
+          $destination = Join-Path $env:RUNNER_TEMP 'pwsh-7.6'
+          $url = "https://github.com/PowerShell/PowerShell/releases/download/v$version/PowerShell-$version-win-x64.zip"
+          Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing
+          Expand-Archive -LiteralPath $archive -DestinationPath $destination
+
+      - name: Install PowerShell 7.6 on Linux and macOS
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          case "$(uname -s):$(uname -m)" in
+            Linux:x86_64) asset=linux-x64 ;;
+            Linux:aarch64) asset=linux-arm64 ;;
+            Darwin:x86_64) asset=osx-x64 ;;
+            Darwin:arm64) asset=osx-arm64 ;;
+            *) echo "Unsupported runner architecture: $(uname -s) $(uname -m)" >&2; exit 1 ;;
+          esac
+          archive="$RUNNER_TEMP/pwsh.tar.gz"
+          destination="$RUNNER_TEMP/pwsh-7.6"
+          url="https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/powershell-${POWERSHELL_VERSION}-${asset}.tar.gz"
+          curl --fail --location --retry 3 --silent --show-error --output "$archive" "$url"
+          mkdir -p "$destination"
+          tar -xzf "$archive" -C "$destination"
+          chmod +x "$destination/pwsh"
+
+      - name: Install test modules for Windows PowerShell
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          Install-Module Pester -RequiredVersion 6.0.1 -Scope CurrentUser -Force -SkipPublisherCheck
+
+      - name: Install test and help modules for PowerShell 7 on Windows
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $pwsh = Join-Path $env:RUNNER_TEMP 'pwsh-7.6\pwsh.exe'
+          & $pwsh -NoProfile -NonInteractive -Command '$ErrorActionPreference = "Stop"; Install-Module Pester -RequiredVersion 6.0.1 -Scope CurrentUser -Force -SkipPublisherCheck; Install-Module Microsoft.PowerShell.PlatyPS -RequiredVersion 1.0.3 -Scope CurrentUser -Force'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Install test and help modules for PowerShell 7 on Linux and macOS
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          "$RUNNER_TEMP/pwsh-7.6/pwsh" -NoProfile -NonInteractive -Command '$ErrorActionPreference = "Stop"; Install-Module Pester -RequiredVersion 6.0.1 -Scope CurrentUser -Force -SkipPublisherCheck; Install-Module Microsoft.PowerShell.PlatyPS -RequiredVersion 1.0.3 -Scope CurrentUser -Force'
+
+      - name: Build and test both PowerShell editions
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $installDir = Join-Path $env:RUNNER_TEMP 'pwsh-7.6'
+          $env:PATH = "$installDir;$env:PATH"
+          & (Join-Path $installDir 'pwsh.exe') -NoProfile -NonInteractive -File .\build.ps1 -Configuration Debug -Docs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build and test PowerShell 7
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          export PATH="$RUNNER_TEMP/pwsh-7.6:$PATH"
+          "$RUNNER_TEMP/pwsh-7.6/pwsh" -NoProfile -NonInteractive -File ./build.ps1 -Configuration Debug -Docs

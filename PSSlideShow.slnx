@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PSSlideShow/PSSlideShow.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PSSlideShow.Tests/PSSlideShow.Tests.csproj" />
+  </Folder>
+</Solution>

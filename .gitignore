@@ -1,0 +1,48 @@
+# ---- Build output -------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+
+# Staged module binaries (produced by build.ps1)
+module/bin/
+module/LICENSE
+
+# ---- .NET / Visual Studio ----------------------------------------------
+*.user
+*.suo
+*.userprefs
+.vs/
+project.lock.json
+*.nupkg
+*.snupkg
+
+# Test / coverage results
+[Tt]est[Rr]esult*/
+TestResults/
+coverage*
+*.coverage
+*.coveragexml
+*.trx
+
+# ---- Rider / JetBrains --------------------------------------------------
+.idea/
+*.sln.iml
+
+# ---- PowerShell ---------------------------------------------------------
+*.psproj
+PSScriptAnalyzerSettings.psd1.bak
+
+# ---- Environment / editors ---------------------------------------------
+*.log
+tmp-*.ps1
+.DS_Store
+Thumbs.db
+
+# Keep shared VS Code settings, ignore per-user state
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
