@@ -29,6 +29,13 @@ Describe 'Dependency isolation' {
         $context.Name | Should-Be 'PSSlideShow'
     }
 
+    It 'loads QRCoder into the dedicated AssemblyLoadContext' -Skip:(-not $script:IsCoreEdition) {
+        New-SlideQrCode 'HELLO' | Out-Null
+        $asm = [System.Reflection.Assembly]::Load('QRCoder')
+        $context = [System.Runtime.Loader.AssemblyLoadContext]::GetLoadContext($asm)
+        $context.Name | Should-Be 'PSSlideShow'
+    }
+
     It 'loads the native syntax highlighter through the staged module' {
         $lines = [PSSlideShow.Rendering.SyntaxHighlighter]::HighlightLines('Get-Process', 'powershell')
         ($lines -join "`n") | Should-MatchString -Expected '\[#'

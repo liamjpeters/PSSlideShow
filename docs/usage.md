@@ -60,6 +60,7 @@ take padding — they are composed inside their parent.
 - **Structured data:** `New-SlideTable`, `New-SlideTree`, charts, calendars, and canvases.
 - **Layout:** `New-SlideColumns` and `New-SlideRows` with nested regions.
 - **Code and live data:** `New-SlideCode` and `New-SlideDynamic`.
+- **QR codes:** `New-SlideQrCode` for a scannable link or short piece of text.
 
 See the [command reference](PSSlideShow/PSSlideShow.md) or `Get-Help New-SlideText -Full` for
 individual parameters and examples.
@@ -111,6 +112,26 @@ New-Slide 'Two columns' {
 runspace, then runs its view script block on the presentation thread to produce widgets. Neither
 script block runs on every repaint; keep the update block self-contained because it does not share
 the presentation runspace.
+
+## QR codes
+
+Use [`New-SlideQrCode`](PSSlideShow/New-SlideQrCode.md) alone or beside explanatory text. The slide
+title can explain where the code leads:
+
+```powershell
+New-Slide 'Feedback' {
+    New-SlideColumns -VPadding 0 {
+        New-SlideColumn { New-SlideText 'Please give me feedback at this link.' }
+        New-SlideColumn { New-SlideQrCode 'https://example.com' }
+    }
+} | Start-SlideShow
+```
+
+The widget preserves a four-module white quiet zone and scales all modules by the same whole-number
+factor. It centres itself within the available space, including a layout region. If the complete
+code cannot fit, it displays a resize message instead of a partial code. When a slide scrolls,
+bring the entire code into view before scanning. Terminal fonts vary, so check the result with a
+phone on the display you intend to use.
 
 ## A note on script encoding (Windows PowerShell 5.1)
 

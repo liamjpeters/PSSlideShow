@@ -29,6 +29,7 @@
         'New-SlideBreakdownChart'
         'New-SlideCalendar'
         'New-SlideCanvas'
+        'New-SlideQrCode'
         'New-SlideAlert'
         'New-SlideDynamic'
     )

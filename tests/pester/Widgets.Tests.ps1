@@ -170,6 +170,36 @@ Describe 'New-SlideCanvas' {
     }
 }
 
+Describe 'New-SlideQrCode' {
+    It 'encodes text and leaves room for the quiet zone by default' {
+        $widget = New-SlideQrCode 'HELLO'
+        $widget.ModuleCount | Should-Be 29
+        $widget.VerticalPadding | Should-Be 0
+    }
+
+    It 'rejects whitespace-only text' {
+        { New-SlideQrCode ' ' } | Should-Throw
+    }
+
+    It 'allows text and a QR code on the same slide' {
+        $slide = New-Slide 'Mixed' {
+            New-SlideQrCode 'HELLO'
+            New-SlideText 'Other content'
+        }
+        $slide.Widgets.Count | Should-Be 2
+    }
+
+    It 'allows a QR code in a flow layout beside text' {
+        $slide = New-Slide 'Feedback' {
+            New-SlideColumns {
+                New-SlideColumn { New-SlideText 'Please give me feedback' }
+                New-SlideColumn { New-SlideQrCode 'HELLO' }
+            }
+        }
+        $slide.Widgets[0].Regions[1].Widgets[0].GetType().Name | Should-Be 'QrCodeWidget'
+    }
+}
+
 Describe 'New-SlideAlert' {
     It 'binds severity, text and defaults the title to the severity name' {
         $widget = New-SlideAlert -Severity Warning -Text 'Careful now'

@@ -25,7 +25,7 @@ Start-SlideShow -Path .\deck.ps1
 ## Features
 
 - Write decks entirely in PowerShell, with text, layouts, tables, trees, charts, calendars, canvas
-  drawings, and [Spectre markup](https://spectreconsole.net/markup).
+  drawings, QR codes, and [Spectre markup](https://spectreconsole.net/markup).
 - Show syntax-highlighted code and run PowerShell live on a slide; dynamic widgets can refresh in the
   background.
 - Use terminal-palette colors that adapt to light and dark themes. Private dependencies are isolated
