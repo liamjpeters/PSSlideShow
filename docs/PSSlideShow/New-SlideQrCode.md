@@ -32,11 +32,12 @@ This cmdlet has no aliases.
 Encodes **Text** as a black-on-white QR code with medium error correction and a four-module
 white quiet zone. It uses terminal half-blocks and only whole-number scales, so resizing never
 stretches individual modules. The largest scale that fits both the available width and height is
-used; if the whole code cannot fit, a resize message appears instead of a clipped code.
+used. The code is centred within its available width and height. If the whole code cannot fit,
+a resize message appears instead of a clipped code.
 
-The QR code must be the only widget on its slide and cannot be nested inside a layout. Use the
-slide title as a caption. Its quiet zone replaces the usual widget spacing, so **VPadding**
-defaults to 0.
+The QR code can share a slide with other widgets or sit inside columns and rows. A slide with
+more content may scroll; scroll until the whole QR code is visible before scanning it. Its quiet
+zone replaces the usual widget spacing, so **VPadding** defaults to 0.
 
 ## EXAMPLES
 
@@ -50,6 +51,20 @@ New-Slide 'Scan me' {
 
 Presents a QR code linking to a short URL. Try it in a real terminal and scan it with a phone;
 longer text can require a larger code and therefore a larger terminal.
+
+### Example 2: Feedback beside the code
+
+```powershell
+New-Slide 'Feedback' {
+    New-SlideColumns -VPadding 0 {
+        New-SlideColumn { New-SlideText 'Please give me feedback at this link.' }
+        New-SlideColumn { New-SlideQrCode 'https://example.com' }
+    }
+}
+```
+
+Puts explanatory text next to the QR code. If its column is too narrow, the code is replaced
+with a resize message rather than being clipped.
 
 ## PARAMETERS
 

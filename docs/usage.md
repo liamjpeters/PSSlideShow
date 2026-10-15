@@ -115,19 +115,23 @@ the presentation runspace.
 
 ## QR codes
 
-Use [`New-SlideQrCode`](PSSlideShow/New-SlideQrCode.md) as the only widget on a slide. The slide title
-can explain where the code leads:
+Use [`New-SlideQrCode`](PSSlideShow/New-SlideQrCode.md) alone or beside explanatory text. The slide
+title can explain where the code leads:
 
 ```powershell
-New-Slide 'Scan the link' {
-    New-SlideQrCode 'https://example.com'
+New-Slide 'Feedback' {
+    New-SlideColumns -VPadding 0 {
+        New-SlideColumn { New-SlideText 'Please give me feedback at this link.' }
+        New-SlideColumn { New-SlideQrCode 'https://example.com' }
+    }
 } | Start-SlideShow
 ```
 
 The widget preserves a four-module white quiet zone and scales all modules by the same whole-number
-factor. If the complete code cannot fit in the slide's content area, it displays a resize message
-instead of a partial code. Terminal fonts vary, so check that a phone can scan the result on the
-display you intend to use.
+factor. It centres itself within the available space, including a layout region. If the complete
+code cannot fit, it displays a resize message instead of a partial code. When a slide scrolls,
+bring the entire code into view before scanning. Terminal fonts vary, so check the result with a
+phone on the display you intend to use.
 
 ## A note on script encoding (Windows PowerShell 5.1)
 

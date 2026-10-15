@@ -181,19 +181,22 @@ Describe 'New-SlideQrCode' {
         { New-SlideQrCode ' ' } | Should-Throw
     }
 
-    It 'rejects other widgets on the same slide' {
-        { New-Slide 'Mixed' {
-                New-SlideQrCode 'HELLO'
-                New-SlideText 'Other content'
-            } } | Should-Throw
+    It 'allows text and a QR code on the same slide' {
+        $slide = New-Slide 'Mixed' {
+            New-SlideQrCode 'HELLO'
+            New-SlideText 'Other content'
+        }
+        $slide.Widgets.Count | Should-Be 2
     }
 
-    It 'rejects nested layouts that would clip the code' {
-        { New-Slide 'Nested' {
-                New-SlideColumns {
-                    New-SlideColumn { New-SlideQrCode 'HELLO' }
-                }
-            } } | Should-Throw
+    It 'allows a QR code in a flow layout beside text' {
+        $slide = New-Slide 'Feedback' {
+            New-SlideColumns {
+                New-SlideColumn { New-SlideText 'Please give me feedback' }
+                New-SlideColumn { New-SlideQrCode 'HELLO' }
+            }
+        }
+        $slide.Widgets[0].Regions[1].Widgets[0].GetType().Name | Should-Be 'QrCodeWidget'
     }
 }
 
