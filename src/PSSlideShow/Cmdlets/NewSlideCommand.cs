@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Management.Automation;
 using PSSlideShow.Authoring;
 using PSSlideShow.Model;
@@ -43,6 +44,15 @@ namespace PSSlideShow.Cmdlets {
                         widgets.Add(widget);
                     }
                 }
+            }
+
+            if (widgets.Count > 1 && widgets.Any(widget => widget is QrCodeWidget)) {
+                ThrowTerminatingError(new ErrorRecord(
+                    new PSArgumentException("A QR code must be the only widget on its slide."),
+                    "QrCodeRequiresOwnSlide",
+                    ErrorCategory.InvalidArgument,
+                    Title));
+                return;
             }
 
             WriteObject(new Slide(Title, widgets, CodeScope));

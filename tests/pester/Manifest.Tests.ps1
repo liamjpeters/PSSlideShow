@@ -45,6 +45,7 @@ Describe 'Module manifest' {
         'New-SlideBreakdownChart'
         'New-SlideCalendar'
         'New-SlideCanvas'
+        'New-SlideQrCode'
         'New-SlideDynamic'
     ) {
         $command = Get-Command -Name $_ -Module PSSlideShow -ErrorAction SilentlyContinue

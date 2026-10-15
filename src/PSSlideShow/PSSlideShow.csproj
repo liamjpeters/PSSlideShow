@@ -14,6 +14,7 @@
   <ItemGroup>
     <!-- Reference-only: the PowerShell host provides the real assembly at runtime. -->
     <PackageReference Include="PowerShellStandard.Library" Version="$(PowerShellStandardVersion)" PrivateAssets="all" ExcludeAssets="runtime" />
+    <PackageReference Include="QRCoder" Version="1.8.1" />
     <PackageReference Include="Spectre.Console" Version="$(SpectreConsoleVersion)" />
     <PackageReference Include="TextMateSharp" Version="$(TextMateSharpVersion)" />
     <PackageReference Include="TextMateSharp.Grammars" Version="$(TextMateSharpVersion)" />
