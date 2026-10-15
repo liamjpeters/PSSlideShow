@@ -11,15 +11,17 @@ jobs:
       contents: write
     env:
       RELEASE_TAG: ${{ github.event.release.tag_name }}
-      POWERSHELL_VERSION: '7.6.6'
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.release.tag_name }}
 
-      - name: Check tag against module version
+      - name: Check runner and tag versions
         shell: pwsh
         run: |
+          if ($PSVersionTable.PSVersion -lt [version]'7.6') {
+            throw "PowerShell 7.6+ is required; this runner has $($PSVersionTable.PSVersion)."
+          }
           $moduleVersion = (Import-PowerShellDataFile -Path .\module\PSSlideShow.psd1).ModuleVersion
           $expectedTag = "v$moduleVersion"
           if ($env:RELEASE_TAG -cne $expectedTag) {
@@ -30,25 +32,16 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Install PowerShell 7.6 and PlatyPS
-        shell: powershell
+      - name: Install PlatyPS
+        shell: pwsh
         run: |
-          $version = $env:POWERSHELL_VERSION
-          $archive = Join-Path $env:RUNNER_TEMP 'pwsh.zip'
-          $destination = Join-Path $env:RUNNER_TEMP 'pwsh-7.6'
-          $url = "https://github.com/PowerShell/PowerShell/releases/download/v$version/PowerShell-$version-win-x64.zip"
-          Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing
-          Expand-Archive -LiteralPath $archive -DestinationPath $destination
-          & (Join-Path $destination 'pwsh.exe') -NoProfile -NonInteractive -Command '$ErrorActionPreference = "Stop"; Install-Module Microsoft.PowerShell.PlatyPS -RequiredVersion 1.0.3 -Scope CurrentUser -Force'
-          if ($LASTEXITCODE -ne 0) { throw "PlatyPS installation failed ($LASTEXITCODE)." }
+          $ErrorActionPreference = 'Stop'
+          Install-Module Microsoft.PowerShell.PlatyPS -RequiredVersion 1.0.3 -Scope CurrentUser -Force
 
       - name: Build and stage release module
-        shell: powershell
+        shell: pwsh
         run: |
-          $installDir = Join-Path $env:RUNNER_TEMP 'pwsh-7.6'
-          $env:PATH = "$installDir;$env:PATH"
-          & (Join-Path $installDir 'pwsh.exe') -NoProfile -NonInteractive -File .\build.ps1 -Configuration Release -SkipTests -Docs
-          if ($LASTEXITCODE -ne 0) { throw "Release build failed ($LASTEXITCODE)." }
+          .\build.ps1 -Configuration Release -SkipTests -Docs
 
       - name: Package module
         shell: pwsh
