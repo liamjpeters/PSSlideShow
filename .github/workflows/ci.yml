@@ -47,26 +47,40 @@ jobs:
           tar -xzf "$archive" -C "$destination"
           chmod +x "$destination/pwsh"
 
-      - name: Install test modules for Windows PowerShell
+      - name: Ensure Pester 6 in Windows PowerShell
         if: runner.os == 'Windows'
         shell: powershell
         run: |
-          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-          Install-Module Pester -RequiredVersion 6.0.1 -Scope CurrentUser -Force -SkipPublisherCheck
+          $ErrorActionPreference = 'Stop'
+          if (-not (Get-Module Pester -ListAvailable |
+              Where-Object Version -GE ([version]'6.0.0') | Select-Object -First 1)) {
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            Install-Module Pester -RequiredVersion 6.0.1 -Scope CurrentUser -Force -SkipPublisherCheck
+          }
 
       - name: Install test and help modules for PowerShell 7 on Windows
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          Install-Module Pester -RequiredVersion 6.0.1 -Scope CurrentUser -Force -SkipPublisherCheck
+          if (-not (Get-Module Pester -ListAvailable |
+              Where-Object Version -GE ([version]'6.0.0') | Select-Object -First 1)) {
+            Install-Module Pester -RequiredVersion 6.0.1 -Scope CurrentUser -Force -SkipPublisherCheck
+          }
           Install-Module Microsoft.PowerShell.PlatyPS -RequiredVersion 1.0.3 -Scope CurrentUser -Force
 
       - name: Install test and help modules for PowerShell 7 on Linux and macOS
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          "$RUNNER_TEMP/pwsh-7.6/pwsh" -NoProfile -NonInteractive -Command '$ErrorActionPreference = "Stop"; Install-Module Pester -RequiredVersion 6.0.1 -Scope CurrentUser -Force -SkipPublisherCheck; Install-Module Microsoft.PowerShell.PlatyPS -RequiredVersion 1.0.3 -Scope CurrentUser -Force'
+          "$RUNNER_TEMP/pwsh-7.6/pwsh" -NoProfile -NonInteractive -Command '
+            $ErrorActionPreference = "Stop"
+            if (-not (Get-Module Pester -ListAvailable |
+                Where-Object Version -GE ([version]"6.0.0") | Select-Object -First 1)) {
+              Install-Module Pester -RequiredVersion 6.0.1 -Scope CurrentUser -Force -SkipPublisherCheck
+            }
+            Install-Module Microsoft.PowerShell.PlatyPS -RequiredVersion 1.0.3 -Scope CurrentUser -Force
+          '
 
       - name: Build and test both PowerShell editions
         if: runner.os == 'Windows'
