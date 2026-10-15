@@ -28,20 +28,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out site source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: gh-pages
           path: site
           persist-credentials: false
 
       - name: Check out current module
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: main
           path: module-source
           persist-credentials: false
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
 
