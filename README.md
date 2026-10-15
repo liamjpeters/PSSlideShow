@@ -57,6 +57,14 @@ Start-SlideShow -Path .\deck.ps1
 See the [usage guide](docs/usage.md) for authoring, navigation, layouts, and live code. Decks execute
 PowerShell, so only run scripts you trust.
 
+## Inspiration
+
+PSSlideShow was inspired by [Jordan Borean](https://github.com/jborean93)'s
+[Method to the Madness - How PowerShell Invokes .NET Methods](https://www.youtube.com/watch?v=hKRbQUDYqeI)
+talk at PSConfEU 2026. He presented from the terminal using a set of commands he'd put together.
+After the presentation, I asked him how he'd done it; I've formalised and (hopefully) polished the
+approach into a reusable module.
+
 ## Documentation
 
 - [Usage guide](docs/usage.md) — decks, controls, code execution, and layout.
