@@ -1,10 +1,10 @@
 @{
     RootModule        = 'PSSlideShow.psm1'
     ModuleVersion     = '0.1.0'
-    GUID              = 'b3f2c1a7-6d4e-4a2b-9c8f-1e0a5d7b3c21'
-    Author            = 'PSSlideShow contributors'
-    CompanyName       = 'PSSlideShow'
-    Copyright         = 'Copyright (c) PSSlideShow contributors'
+    GUID              = '4e68bda7-b85d-4cbd-a8a3-a0fcc1fbb949'
+    Author            = 'Liam Peters'
+    CompanyName       = ''
+    Copyright         = 'Copyright (c) Liam Peters (@liamjpeters).'
     Description       = 'Author and present interactive terminal slide shows using a PowerShell DSL.'
 
     # net10.0 build targets .NET 10, so the PowerShell 7 floor is 7.6+. Windows PowerShell 5.1 uses
