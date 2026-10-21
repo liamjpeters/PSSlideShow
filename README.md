@@ -40,18 +40,19 @@ Start-SlideShow -Path .\deck.ps1
 
 ## Getting started
 
-Build from source and run the bundled tour:
+Install the published module from the PowerShell Gallery, then present your own deck:
+
+```powershell
+Install-Module PSSlideShow -Scope CurrentUser
+Import-Module PSSlideShow
+Start-SlideShow -Path .\deck.ps1
+```
+
+To run the bundled tour or work from a local build, build from source:
 
 ```powershell
 pwsh -NoProfile -File .\build.ps1
-.\example.ps1
-```
-
-For your own deck, import the built module before presenting it:
-
-```powershell
-Import-Module .\module\PSSlideShow.psd1
-Start-SlideShow -Path .\deck.ps1
+& (Join-Path . 'example.ps1')
 ```
 
 See the [usage guide](docs/usage.md) for authoring, navigation, layouts, and live code. Decks execute
@@ -97,9 +98,10 @@ On Windows, close any session that imported the module before rebuilding: it may
 
 After CI passes, publish a GitHub release for a tag matching `v<ModuleVersion>` in the
 [module manifest](module/PSSlideShow.psd1), for example `v0.1.0`. The
-[release workflow](.github/workflows/release.yml) checks that version, builds and stages the module
-in Release mode, and attaches a `PSSlideShow-<version>.zip` containing the installable
-`PSSlideShow/` folder. It does not publish to PowerShell Gallery or rerun tests.
+[release workflow](.github/workflows/release.yml) builds and tests the module in Release mode, checks
+that the tag matches the manifest version, attaches a `PSSlideShow-<version>.zip` containing the
+installable `PSSlideShow/` folder, and publishes the module to the PowerShell Gallery. Publishing
+requires the repository secret `PSGALLERY_API_KEY`.
 
 ## License
 
