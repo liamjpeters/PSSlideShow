@@ -1,0 +1,11 @@
+{{- if and .light .dark }}
+  <img src="{{ .light | relURL }}" alt="{{ .alt }}"
+       class="{{ .class }} dark:hidden">
+  <img src="{{ .dark | relURL }}" alt="{{ .alt }}"
+       class="hidden {{ .class }} dark:block">
+{{- else }}
+  {{- with or .src .light .dark }}
+    <img src="{{ . | relURL }}" alt="{{ $.alt }}"
+         class="{{ $.class }}">
+  {{- end }}
+{{- end -}}

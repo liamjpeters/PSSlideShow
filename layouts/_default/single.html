@@ -4,9 +4,15 @@
     <span aria-hidden="true"> / </span>{{ .Title }}
   </nav>
   <article class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-    {{ with .Params.image }}
-      <img src="{{ . | relURL }}" alt="{{ $.Params.image_alt | default (printf "%s screenshot" $.Title) }}"
-           class="w-full border-b border-gray-200 dark:border-gray-700">
+    {{ if or .Params.image .Params.image_light .Params.image_dark }}
+      {{ $alt := .Params.image_alt | default (printf "%s screenshot" .Title) }}
+      {{ partial "theme-image.html" (dict
+        "src" .Params.image
+        "light" .Params.image_light
+        "dark" .Params.image_dark
+        "alt" $alt
+        "class" "w-full border-b border-gray-200 dark:border-gray-700"
+      ) }}
     {{ end }}
     <div class="p-8 md:p-12">
       <h1 class="mb-3 text-3xl font-bold text-gray-900 dark:text-white">{{ .Title }}</h1>
