@@ -8,8 +8,9 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$moduleRoot = [IO.Path]::GetFullPath($ModuleRoot)
-$outputPath = [IO.Path]::GetFullPath($OutputPath)
+$basePath = (Get-Location).ProviderPath
+$moduleRoot = [IO.Path]::GetFullPath($ModuleRoot, $basePath)
+$outputPath = [IO.Path]::GetFullPath($OutputPath, $basePath)
 $helpDir = Join-Path (Join-Path $moduleRoot 'docs') 'PSSlideShow'
 $manifestPath = Join-Path (Join-Path $moduleRoot 'module') 'PSSlideShow.psd1'
 

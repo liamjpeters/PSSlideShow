@@ -1,0 +1,17 @@
+# {{ .Site.Title }}
+
+> {{ .Site.Params.description }}
+
+This file points to the widget and cmdlet reference in Markdown. Each page contains its
+description, examples, and usage details.
+
+{{ range $sectionName := slice "widgets" "cmdlets" }}
+{{ with site.GetPage $sectionName }}
+## {{ .Title }}
+{{ range .RegularPages.ByTitle }}
+{{ $page := . }}{{ with .OutputFormats.Get "markdown" }}
+- [{{ $page.Title }}]({{ .Permalink }}): {{ $page.Description }}
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}

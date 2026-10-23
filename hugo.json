@@ -4,6 +4,27 @@
   "title": "PSSlideShow",
   "enableRobotsTXT": true,
   "disableKinds": ["taxonomy", "term", "RSS"],
+  "mediaTypes": {
+    "text/plain": {
+      "suffixes": ["txt"]
+    }
+  },
+  "outputFormats": {
+    "markdown": {
+      "ugly": true
+    },
+    "llms": {
+      "baseName": "llms",
+      "isPlainText": true,
+      "mediaType": "text/plain",
+      "notAlternative": true,
+      "root": true
+    }
+  },
+  "outputs": {
+    "home": ["HTML", "llms"],
+    "page": ["HTML", "markdown"]
+  },
   "build": {
     "buildStats": {
       "enable": true
