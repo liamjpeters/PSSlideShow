@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ if ne .Title site.Title }}{{ .Title }} - {{ end }}{{ site.Title }}</title>
     <meta name="description" content="{{ .Description | default site.Params.description }}">
+    <link rel="describedby" href="{{ "llms.txt" | absURL }}">
+    {{ with .OutputFormats.Get "markdown" }}
+      <link rel="alternate" type="text/markdown" href="{{ .Permalink }}">
+    {{ end }}
     <meta name="theme-color" content="#ffffff" id="theme-color-meta">
     <link rel="canonical" href="{{ .Permalink }}">
     <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">

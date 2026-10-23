@@ -96,8 +96,11 @@ jobs:
         run: |
           export PATH="$RUNNER_TEMP:$PATH"
           hugo --source site --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+          test -f site/public/llms.txt
           test -f site/public/cmdlets/new-slidetext/index.html
+          test -f site/public/cmdlets/new-slidetext.md
           test -f site/public/widgets/text/index.html
+          test -f site/public/widgets/text.md
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4

@@ -1,0 +1,15 @@
+{{- $src := .Get "src" -}}
+{{- $light := .Get "light" -}}
+{{- $dark := .Get "dark" -}}
+{{- $alt := .Get "alt" -}}
+{{- if not $alt -}}
+  {{- errorf "theme-image shortcode in %s requires non-empty alt text" .Page.File.Path -}}
+{{- end -}}
+{{- if $src -}}
+  {{- if or $light $dark -}}
+    {{- errorf "theme-image shortcode in %s accepts either src or both light and dark, not a mixture" .Page.File.Path -}}
+  {{- end -}}
+{{- else if not (and $light $dark) -}}
+  {{- errorf "theme-image shortcode in %s requires src or both light and dark" .Page.File.Path -}}
+{{- end -}}
+{{- return (dict "src" $src "light" $light "dark" $dark "alt" $alt) -}}
