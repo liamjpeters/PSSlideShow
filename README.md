@@ -65,3 +65,4 @@ deployments always run from the branch allowed by the `github-pages` environment
 module and `gh-pages` for the site, validates the command help, builds with Hugo and Tailwind, and
 deploys a Pages artifact. Set the repository's GitHub Pages source to **GitHub Actions**; the
 generated HTML does not live in this branch.
+Hugo also generates a themed `404.html` page for GitHub Pages to serve when a URL is not found.

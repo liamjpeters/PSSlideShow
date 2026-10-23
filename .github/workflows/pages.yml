@@ -97,6 +97,7 @@ jobs:
           export PATH="$RUNNER_TEMP:$PATH"
           hugo --source site --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
           test -f site/public/llms.txt
+          test -f site/public/404.html
           test -f site/public/cmdlets/new-slidetext/index.html
           test -f site/public/cmdlets/new-slidetext.md
           test -f site/public/widgets/text/index.html
