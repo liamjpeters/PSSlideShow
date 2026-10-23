@@ -17,7 +17,13 @@ Creates a single slide from a content script block.
 
 ## SYNTAX
 
-### __AllParameterSets
+### ContentOnly
+
+```
+New-Slide [-Content] <scriptblock> [-CodeScope <CodeScope>]
+```
+
+### TitleAndContent
 
 ```
 New-Slide [[-Title] <string>] [-Content] <scriptblock> [-CodeScope <CodeScope>]
@@ -31,7 +37,9 @@ This cmdlet has no aliases.
 
 Invokes the **Content** script block and collects every widget it emits, in order, as the slide's
 content stack. The `New-Slide*` widget cmdlets are only meaningful inside this block. The resulting
-slide object is typically piped to (or collected for) `Start-SlideShow`.
+slide object is typically piped to (or collected for) `Start-SlideShow`. Omit **Title** to bind the
+content block as the first positional argument; when a title is supplied, it occupies the first
+position and the content block occupies the second.
 
 ## EXAMPLES
 
@@ -45,6 +53,16 @@ New-Slide -Title 'Welcome' -Content {
 ```
 
 Builds a slide titled *Welcome* containing a FIGlet banner above a centered line of text.
+
+### Example 2: A slide without a title
+
+```powershell
+New-Slide {
+    New-SlideText 'A slide without a title.'
+}
+```
+
+Creates an untitled slide without requiring the `-Content` label.
 
 ## PARAMETERS
 
@@ -81,7 +99,13 @@ DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: ContentOnly
+  Position: 0
+  IsRequired: true
+  ValueFromPipeline: false
+  ValueFromPipelineByPropertyName: false
+  ValueFromRemainingArguments: false
+- Name: TitleAndContent
   Position: 1
   IsRequired: true
   ValueFromPipeline: false
@@ -103,7 +127,7 @@ DefaultValue: ''
 SupportsWildcards: false
 Aliases: []
 ParameterSets:
-- Name: (All)
+- Name: TitleAndContent
   Position: 0
   IsRequired: false
   ValueFromPipeline: false
@@ -137,4 +161,3 @@ during the show.
 ## RELATED LINKS
 
 - [Start-SlideShow](Start-SlideShow.md)
-

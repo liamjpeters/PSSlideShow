@@ -12,6 +12,13 @@ AfterAll {
 }
 
 Describe 'New-Slide' {
+    It 'binds a positional content block when the title is omitted' {
+        $slide = New-Slide { New-SlideText 'untitled' }
+
+        $slide.Title | Should-Be $null
+        $slide.Widgets.Count | Should-Be 1
+    }
+
     It 'collects emitted widgets in order' {
         $slide = New-Slide -Title 'Demo' -Content {
             New-SlideText 'first'
@@ -22,6 +29,20 @@ Describe 'New-Slide' {
         $slide.Widgets.Count | Should-Be 2
         $slide.Widgets[0].GetType().Name | Should-Be 'TextWidget'
         $slide.Widgets[1].GetType().Name | Should-Be 'ListWidget'
+    }
+
+    It 'preserves positional title and content binding' {
+        $slide = New-Slide 'Positional title' { New-SlideText 'content' }
+
+        $slide.Title | Should-Be 'Positional title'
+        $slide.Widgets.Count | Should-Be 1
+    }
+
+    It 'binds positional content after a named title' {
+        $slide = New-Slide -Title 'Named title' { New-SlideText 'content' }
+
+        $slide.Title | Should-Be 'Named title'
+        $slide.Widgets.Count | Should-Be 1
     }
 
     It 'defaults CodeScope to Slide' {

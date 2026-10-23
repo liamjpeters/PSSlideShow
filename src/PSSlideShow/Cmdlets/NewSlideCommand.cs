@@ -9,7 +9,8 @@ namespace PSSlideShow.Cmdlets {
     /// <para type="description">
     /// Invokes the <c>-Content</c> script block and collects every <c>ISlideWidget</c> it emits (in
     /// order) as the slide's content stack. Widget cmdlets (<c>New-Slide*</c>) are only meaningful
-    /// inside this block.
+    /// inside this block. The optional title can be omitted, in which case the content block can be
+    /// supplied as the first positional argument.
     /// </para>
     /// </summary>
     /// <example>
@@ -20,15 +21,26 @@ namespace PSSlideShow.Cmdlets {
     ///   }
     ///   </code>
     /// </example>
-    [Cmdlet(VerbsCommon.New, "Slide")]
+    /// <example>
+    ///   <code>
+    ///   New-Slide {
+    ///       New-SlideText 'A slide without a title.'
+    ///   }
+    ///   </code>
+    /// </example>
+    [Cmdlet(VerbsCommon.New, "Slide", DefaultParameterSetName = ContentOnlySet)]
     [OutputType(typeof(Slide))]
     public sealed class NewSlideCommand : PSCmdlet {
+        private const string ContentOnlySet = "ContentOnly";
+        private const string TitleAndContentSet = "TitleAndContent";
+
         /// <summary>Optional title text. Empty/absent reserves a blank title row.</summary>
-        [Parameter(Position = 0)]
+        [Parameter(Position = 0, ParameterSetName = TitleAndContentSet)]
         public string? Title { get; set; }
 
         /// <summary>The script block that emits the slide's widgets. Required.</summary>
-        [Parameter(Mandatory = true, Position = 1)]
+        [Parameter(Mandatory = true, Position = 0, ParameterSetName = ContentOnlySet)]
+        [Parameter(Mandatory = true, Position = 1, ParameterSetName = TitleAndContentSet)]
         public ScriptBlock Content { get; set; } = null!;
 
         /// <summary>Runspace-sharing policy for runnable code on this slide.</summary>
